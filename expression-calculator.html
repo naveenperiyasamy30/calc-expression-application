@@ -1,0 +1,162 @@
+<html>
+
+<head>
+
+<title>
+    CALC EXPRESSION
+</title><style>
+body {
+    font-family: Bahnschrift, sans-serif;
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #000000, #1c1b1b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+
+#overall {
+    width: 400px;
+    padding: 30px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #27272771, #111111);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+input[type="text"] {
+    width: 90%;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    margin-bottom: 15px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    backdrop-filter: blur(5px);
+}
+
+input[type="text"]::placeholder {
+    color: #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    width: 90%;
+    background: #ffffff;
+    color: #000000;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ccc;
+    color: #000;
+}
+
+#resultPara {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 22px;
+    color: rgb(205, 205, 205);
+}
+
+#historyBox {
+    margin-top: 30px;
+    text-align: left;
+    color: #aaa;
+}
+
+#historyBox h2 {
+    font-size: 20px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+    color: #fff;
+}
+
+#historyPara {
+    font-size: 16px;
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-line;
+}
+</style>
+
+</head>
+
+<body>
+    <div id="overall">
+    <form id="calcForm" >
+    <input type="text" name="getInput" id="getInput" placeholder="Enter the Equation" autocomplete="off">
+    <button id="btn" type="submit">GET ANSWER !</button>
+    </form>
+    <p id="resultPara">HERE THE RESULT WILL APPEAR</p>
+
+  <div id="historyBox">
+    <h2>history</h2>
+    <p id="historyPara"></p>
+  </div>
+</div>
+    <script>
+        
+        
+        document.getElementById("calcForm").addEventListener("submit", function(e) {
+            e.preventDefault(); 
+            getEquation();   
+        });
+
+        const history=[];
+
+
+        function getEquation(){
+
+            const getInput = document.getElementById("getInput").value;
+
+            fetch("http://localhost:9090/calcexpr",{
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({expr: getInput})
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("resultPara").innerHTML=`${getInput} = ${data}`;
+                history.push(`${getInput} = ${data}`)
+                updateHistory();
+                document.getElementById("getInput").value = "";
+            })
+           
+
+
+          
+
+        }
+
+                function updateHistory() {
+                    const historyText = document.getElementById("historyPara");
+                    if (history.length === 0) {
+                        historyText.innerText = "No history yet...";
+                    } else {
+                        
+                        historyText.innerHTML = history.slice().reverse().join("<br>");
+                    }
+                    }
+
+    </script>
+
+
+</body>
+
+
+
+</html>
