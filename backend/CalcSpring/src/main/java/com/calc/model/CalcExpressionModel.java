@@ -5,7 +5,7 @@ package com.calc.model;
 public class CalcExpressionModel {
 	
 	
-	String expr;
+	private String expr;
 
 
 	public CalcExpressionModel(String expr) {
